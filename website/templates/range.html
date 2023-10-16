@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+
+<section class="dashboard">
+    <div class="dash-content">
+        <div class="overview">
+            <div class="title">
+                <i class="uil uil-tachometer-fast-alt"></i>
+                <h1>Date Range Slider</h1>
+                <div>
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" name="start_date" id="start_date">
+                    <br>
+                    <label for="end_date">End Date:</label>
+                    <input type="date" name="end_date" id="end_date">
+                    <br>
+                    <input type="button" value="Apply" id="apply_button">
+                </div>
+                <div id="slider"></div>
+                
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    $(document).ready(function() {
+  // Fetch initial data on page load
+  fetchData();
+
+  // Initialize the range slider
+  $("#slider").slider({
+    range: true,
+    min: new Date("2022-01-01").getTime(), // Update with your minimum date
+    max: new Date().getTime(), // Update with the current date
+    step: 86400000, // 1 day in milliseconds
+    values: [new Date("2022-01-01").getTime(), new Date().getTime()], // Set initial range
+    slide: function(event, ui) {
+      // Update the input date fields when sliding the range slider
+      $("#start_date").val(formatDate(new Date(ui.values[0])));
+      $("#end_date").val(formatDate(new Date(ui.values[1])));
+    },
+    change: function(event, ui) {
+      // Fetch data when the range slider range changes
+      fetchData();
+    }
+  });
+
+  // Handle the Apply button click event
+  $("#apply_button").click(function() {
+    // Fetch data when the Apply button is clicked
+    fetchData();
+  });
+
+  function fetchData() {
+    var start_date = $("#start_date").val();
+    var end_date = $("#end_date").val();
+
+    // Send an AJAX request to your Flask route to fetch the data
+    $.ajax({
+      type: "POST",
+      url: "/range",
+      data: { start_date: start_date, end_date: end_date },
+      success: function(data) {
+        // Update the results div with the fetched data
+        $("#results").html(data);
+      },
+      error: function(error) {
+        console.log("Error:", error);
+      }
+    });
+  }
+
+  function formatDate(date) {
+    var year = date.getFullYear();
+    var month = ("0" + (date.getMonth() + 1)).slice(-2);
+    var day = ("0" + date.getDate()).slice(-2);
+    return year + "-" + month + "-" + day;
+  }
+});
+
+</script>
+
+{% endblock %}

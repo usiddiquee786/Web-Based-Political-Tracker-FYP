@@ -1,0 +1,138 @@
+{% extends "analytics.html" %}
+{% block content2 %}
+<!-- Here it wordcloud code starts -->
+<script>
+    // Pass sorted_word_freq dictionary to JavaScript
+    var wordFreq = {{ sorted_word_freq|tojson }};
+
+    // Convert dictionary to array of objects and filter words with size less than 10
+    var wordList = Object.entries(wordFreq).map(([text, size]) => ({ text, size }));
+    wordList = wordList.filter(function(d) {
+      return d.size >= 10 && d.size<=1000;
+    });
+
+    // Use d3-cloud library to generate word cloud
+    var width = 1000;
+    var height = 400;
+    var svg = d3.select("#wordcloud2")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var layout = d3.layout.cloud()
+      .size([width, height])
+      .words(wordList)
+      .padding(5)
+      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+      .fontSize(function(d) { return d.size/2; })
+      .on("end", draw);
+
+    layout.start();
+
+    // Define the gradient
+    var gradient = svg.append("defs")
+      .append("linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%");
+
+    // Add the gradient colors
+    gradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#0AFA62");
+
+    gradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#030A8C");
+
+    function draw(words) {
+      svg.selectAll("text")
+        .data(words)
+        .enter().append("text")
+        .style("font-size", function(d) { return d.size + "px"; })
+        .style("fill", "url(#gradient)")
+        .attr("text-anchor", "middle")
+        .attr("transform", function(d) {
+          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        })
+        .text(function(d) { return d.text; })
+        .on("click", function(d) {
+          // Get the clicked word
+          var clickedWord = d.text;
+          // Construct the URL with the clicked word as a query parameter
+          var url = "https://example.com/results?word=" + clickedWord;
+          // Navigate to the results page
+          window.location.href = url;
+        })
+        .on("mouseover", function() {
+          d3.select(this).style("cursor", "pointer");
+        })
+        .on("mouseout", function() {
+          d3.select(this).style("cursor", "default");
+        });
+    }
+</script>
+<!-- Here it ends -->
+<script>
+    var negative_percentage = {{ negative_percentage }};
+    var positive_percentage = {{ positive_percentage }};
+  
+    var gauge_negative = new JustGage({
+      id: "gauge-negative",
+      value: negative_percentage,
+      min: 0,
+      max: 100,
+      title: "Negative Sentiment",
+      label: "%",
+      gaugeWidthScale: 0.6,
+      levelColors: ["#f44336", "#ffc107", "#4caf50"],
+      levelColorsGradient: true,
+      pointer: true,
+      pointerOptions: {
+        toplength: -15,
+        bottomlength: 10,
+        bottomwidth: 12,
+        color: "#333333"
+      },
+      startAnimationTime: 1000,
+      refreshAnimationTime: 500,
+      valueFontColor: "#333333",
+      titleFontFamily: "Arial",
+      titleFontSize: "24px",
+      valueFontFamily: "Arial",
+      valueFontSize: "36px"
+    });
+    gauge_negative.refresh(negative_percentage);
+  
+    var gauge_positive = new JustGage({
+      id: "gauge-positive",
+      value: positive_percentage,
+      min: 0,
+      max: 100,
+      title: "Positive Sentiment",
+      label: "%",
+      gaugeWidthScale: 0.6,
+      levelColors: ["#f44336", "#ffc107", "#4caf50"],
+      levelColorsGradient: true,
+      pointer: true,
+      pointerOptions: {
+        toplength: -15,
+        bottomlength: 10,
+        bottomwidth: 12,
+        color: "#333333"
+      },
+      startAnimationTime: 1000,
+      refreshAnimationTime: 500,
+      valueFontColor: "#333333",
+      titleFontFamily: "Arial",
+      titleFontSize: "24px",
+      valueFontFamily: "Arial",
+      valueFontSize: "36px"
+    });
+    gauge_positive.refresh(positive_percentage);
+  </script>
+{% endblock %}

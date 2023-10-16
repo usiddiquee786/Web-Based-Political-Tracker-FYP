@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@drustack/leaflet.resetview/dist/L.Control.ResetView.min.css">
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" <script
+        src="https://cdn.jsdelivr.net/npm/@drustack/leaflet.resetview/dist/L.Control.ResetView.min.js"></script>
+    </script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/BalochistanJson.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/ISBjson.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/Punjabjson.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/KPKjson.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/Kashmirjson.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/Gilgitjson.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/Sindhjson.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/AllProvinceJSON.js') }}"></script>
+    <script src="{{ url_for('static', filename='GeoJSON/DistrictJSON.js') }}"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/wordcloud@2.1.0/dist/wordcloud.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.2.9/justgage.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/gauge@1.1.1/dist/gauge.min.js"></script>
+
+
+
+
+    <!-- <title>Political Tracker Dashboard</title>  -->
+    <!-- <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    /> -->
+
+    <title>{% block title %}Home{% endblock %}</title>
+</head>
+
+<body>
+    <nav>
+        <div class="logo-name">
+            <div class="logo-image">
+                <img src="{{ url_for('static', filename='image/pt.PNG') }}" alt="">
+            </div>
+
+            <!-- <span class="logo_name">Political Tracker</span> -->
+        </div>
+
+        <div class="menu-items">
+            <ul class="nav-links">
+                <li><a href="/">
+                        <i class="uil uil-estate"></i>
+                        <span class="link-name">Dashboard</span>
+                    </a></li>
+                <li><a href="/analytics">
+                        <i class="uil uil-chart"></i>
+                        <span class="link-name">Analytics</span>
+                    </a></li>
+                <li id="imp">
+                    <!-- <i class="uil uil-files-landscapes"></i> -->
+                    <span class="link-name" id="imp2">Important Topics</span>
+                </li>
+                <li><a href="/education">
+                        <i class="uil uil-forward"></i>
+                        <span class="link-name">Education</span>
+                    </a></li>
+                <li><a href="/economics">
+                        <i class="uil uil-forward"></i>
+                        <span class="link-name">Economics</span>
+                    </a></li>
+                <li><a href="/health">
+                        <i class="uil uil-forward"></i>
+                        <span class="link-name">Health</span>
+                    </a></li>
+                <li><a href="/poverty">
+                        <i class="uil uil-forward"></i>
+                        <span class="link-name">Poverty</span>
+                    </a></li>
+
+                <!-- <li><a href="#">
+                    <i class="uil uil-thumbs-up"></i>
+                    <span class="link-name">Like</span>
+                </a></li>
+                <li><a href="#">
+                    <i class="uil uil-comments"></i>
+                    <span class="link-name">Comment</span>
+                </a></li>
+                <li><a href="#">
+                    <i class="uil uil-share"></i>
+                    <span class="link-name">Share</span>
+                </a></li> -->
+            </ul>
+
+            <ul class="logout-mode">
+                <!-- <li><a href="#">
+                    <i class="uil uil-signin"></i>
+                    <span class="link-name">Login</span>
+                </a></li> -->
+
+                <li class="mode">
+                    <a href="#">
+                        <i class="uil uil-moon"></i>
+                        <span class="link-name">Dark Mode</span>
+                    </a>
+
+                    <div class="mode-toggle">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %} 
+        {% if category == 'error' %}
+        <div class="alert alert-danger alter-dismissable fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% else %}
+    <div class="alert alert-success alter-dismissable fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}</div> -->
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <!-- <script 
+        type="text/javascript"
+        src="{{url_for('static',filename='index.js')}}"
+        ></script> -->
+</body>
+
+</html>

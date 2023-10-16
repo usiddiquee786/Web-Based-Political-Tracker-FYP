@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="dashboard">
+    <!-- <div class="top">
+        <i class="uil uil-bars sidebar-toggle"></i> -->
+
+    <!--<div class="search-box">
+            <i class="uil uil-search"></i>
+            <input type="text" placeholder="Search here...">
+        </div>-->
+
+    <!--<img src="images/profile.jpg" alt="">-->
+    <!-- </div> -->
+
+    <div class="dash-content">
+        <div class="overview">
+            <div class="title">
+                <i class="uil uil-tachometer-fast-alt"></i>
+                <span class="text">Dashboard</span>
+                <!-- <select name="sector" id="sector" class="dd">
+                    <option value="select" selected disabled>Select Topic</option>
+                    <option value="Health" >Health</option>
+                    <option value="Employment">Employment</option>
+                    <option value="Education">Education</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Poverty">Poverty</option>
+                   
+                  </select> -->
+
+
+                <!-- Checked DropDown Party -->
+
+                <div class="multipleSelectionP">
+                    <div class="selectBoxP" onclick="showCheckboxesP()">
+                        <select class="selectHP">
+                            <option class="btn-textP">Select Party</option>
+                        </select>
+                        <div class="overSelectP" id="displayP"></div>
+                    </div>
+
+                    <div id="checkBoxesP">
+                        <!-- <form id="myform" method="POST"> -->
+                        <label for="PTI">
+                            <input type="checkbox" id="PTI" class="itemP" value="PTI" />
+                            PTI
+                        </label>
+
+                        <label for="PMLN">
+                            <input type="checkbox" id="PMLN" class="itemP" value="PMLN" />
+                            PML-N
+                        </label>
+                        <!-- <label for="PPP">
+                            <input type="checkbox" id="PPP" class="itemP" value="PPP" />
+                            PPP
+                        </label> -->
+                        <!-- </form> -->
+                    </div>
+                </div>
+            </div>
+            <div class="boxes">
+                <div id="map">
+                </div>
+                <!-- <h1 id="element1"></h1>
+                <h1 id="element2"></h1> -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='GeoJSON/HeatMap.js') }}"></script>
+<!-- <script>
+function sendData() {
+    var partyCheckboxes = document.querySelectorAll("#checkBoxesP input[type='checkbox']:checked");
+    var partyValues = [];
+
+    for (var i = 0; i < partyCheckboxes.length; i++) {
+        partyValues.push(partyCheckboxes[i].value);
+    }
+
+    var data = new URLSearchParams();
+    data.append('parties', JSON.stringify(partyValues));
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/parties?" + data.toString(), true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            // Parse the JSON response from the server
+            var data = JSON.parse(xhr.responseText);
+
+            // Update the relevant HTML elements with the retrieved data
+            document.getElementById("element1").innerText = data.pti_tweet;
+            document.getElementById("element2").innerText = data.n_pmlnmember;
+            // etc.
+        }
+    }
+    xhr.send();
+}
+</script> -->
+
+<script>
+
+    var showP = true;
+
+    function showCheckboxesP() {
+
+        var checkboxesP =
+            document.getElementById("checkBoxesP");
+
+        if (showP) {
+            checkboxesP.style.display = "block";
+            showP = false;
+        } else {
+            checkboxesP.style.display = "none";
+            showP = true;
+        }
+    }
+
+    document.addEventListener('click', function clickOutside(event) {
+        let getP = document.getElementById('displayP');
+        let checkboxesP =
+            document.getElementById("checkBoxesP");
+        if (!getP.contains(event.target)) {
+            checkboxesP.style.display = "none";
+            showP = true;
+            // console.log(event.target);
+        }
+        else {
+            checkboxesP.style.display = "block";
+            showP = false;
+        }
+    });
+
+    const itemsP = document.querySelectorAll(".itemP");
+    itemsP.forEach(itemP => {
+        itemP.addEventListener("click", () => {
+            itemP.classList.toggle("checkedP");
+
+            let checkedP = document.querySelectorAll(".checkedP"),
+                btnTextP = document.querySelector(".btn-textP");
+
+            if (checkedP && checkedP.length > 0) {
+                btnTextP.innerText = `${checkedP.length} Selected`;
+                //sendData();
+            } else {
+                btnTextP.innerText = "Select Party";
+            }
+        });
+    })
+
+</script>
+<!-- <script>
+    var show = true;
+
+    function showCheckboxes() {
+        var checkboxes =
+            document.getElementById("checkBoxes");
+
+        if (show) {
+            checkboxes.style.display = "block";
+            show = false;
+        } else {
+            checkboxes.style.display = "none";
+            show = true;
+        }
+    }
+
+    document.addEventListener('click', function clickOutside(event) {
+        let get = document.getElementById('display');
+        let checkboxes =
+            document.getElementById("checkBoxes");
+        if (!get.contains(event.target)) {
+            checkboxes.style.display = "none";
+            show = true;
+            // console.log(event.target);
+        }
+        else {
+            checkboxes.style.display = "block";
+            show = false;
+        }
+    });
+
+</script> -->
+
+<script>
+    function updatePageWithData() {
+        // Make an AJAX request to the server to fetch the data
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/parties", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                // Parse the JSON response from the server
+                var data = JSON.parse(xhr.responseText);
+
+                // Update the relevant HTML elements with the retrieved data
+                document.getElementById("element1").innerText = data.n_ptimember;
+                // document.getElementById("element2").innerText = data.n_pmlnmember;
+                // etc.
+            }
+        }
+        xhr.send();
+    }
+</script>
+<script>
+    window.addEventListener("load", function () {
+        updatePageWithData();
+    });
+</script>
+{% endblock %}

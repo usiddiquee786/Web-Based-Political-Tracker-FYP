@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<section class="dashboard">
+    <!-- <div class="top">
+        <i class="uil uil-bars sidebar-toggle"></i> -->
+  
+        <!--<div class="search-box">
+            <i class="uil uil-search"></i>
+            <input type="text" placeholder="Search here...">
+        </div>-->
+        
+        <!--<img src="images/profile.jpg" alt="">-->
+    <!-- </div> -->
+  
+    <div class="dash-content">
+        <div class="overview">
+            <div class="title">
+                <img src="{{ url_for('static', filename='image/' + data['User'] + '.jpg') }}" alt="Profile Picture" class="profile-picture">
+                <span class="text">{{data['Name']}}</span>
+                
+                <br>
+                </div>
+                <!-- <div class="profile">
+                    
+                    
+                </div>   -->
+            </div>
+            <div class="container">
+                <div id="wordcloud2"></div>
+                <div class="Guage_container" style="display: flex;">
+                  <div>
+                    <h3 id="pos">Positive Sentiment</h3>
+                    <div id="positive-gauge"></div>
+                  </div>
+                  <div>
+                    <h3 id="neg">Negative Sentiment</h3>
+                    <div id="negative-gauge"></div>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+  </section>
+  <script>
+    // Pass sorted_word_freq dictionary to JavaScript
+    
+    var wordFreq = {{ sorted_word_freq|tojson }};
+    var thiuser="{{data['User']}}"
+  
+    // Convert dictionary to array of objects and filter words with size less than 10
+    var wordList = Object.entries(wordFreq).map(([text, size]) => ({ text, size }));
+    wordList = wordList.filter(function(d) {
+      return  d.size<=1000 && !d.text.includes("http") && !d.text.includes("rt") && !d.text.includes("of the") && !d.text.includes("co");
+    });
+  
+    // Use d3-cloud library to generate word cloud
+    var width = 1000;
+    var height = 400;
+    var svg = d3.select("#wordcloud2")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .append("g")
+      .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+  
+    var layout = d3.layout.cloud()
+      .size([width, height])
+      .words(wordList)
+      .padding(5)
+      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+      .fontSize(function(d) {
+      {% if selected_locations is defined %}
+        {% if selected_locations[0] == "BAL" %}
+          return (d.size <= 2) ? d.size * 8 : d.size;
+        {% else %}
+          return d.size*2;
+        {% endif %}
+      {% else %}
+        return d.size*2;
+      {% endif %}
+    })
+      .on("end", draw);
+  
+    layout.start();
+  
+    // Define the gradient
+    var gradient = svg.append("defs")
+      .append("linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%");
+  
+    // Add the gradient colors
+    gradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#0AFA62");
+  
+    gradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#030A8C");
+  
+    function draw(words) {
+      svg.selectAll("text")
+        .data(words)
+        .enter().append("text")
+        .style("font-size", function(d) { return d.size + "px"; })
+        .style("fill", "url(#gradient)")
+        .attr("text-anchor", "middle")
+        .attr("transform", function(d) {
+          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        })
+        .text(function(d) { return d.text; })
+        .on("click", function(d) {
+          // Get the clicked word
+           // Get the clicked word
+        var clickedWord = d.text;
+        window.location.href = "/profiletweets?word=" + clickedWord + "&user=" + thiuser;
+        })
+        .on("mouseover", function() {
+          d3.select(this).style("cursor", "pointer");
+        })
+        .on("mouseout", function() {
+          d3.select(this).style("cursor", "default");
+        });
+    }
+  </script>
+  <!-- Here it ends -->
+  <!-- The Guage Code starts here-->
+  <script>
+    var negative_percentage = {{ negative_percentage }};
+    var positive_percentage = {{ positive_percentage }};
+  
+    var positive_gauge = new JustGage({
+        id: "positive-gauge",
+        value: positive_percentage,
+        min: 0,
+        max: 100,
+        title: "Positive",
+        label: "%",
+        gaugeWidthScale: 0.6,
+        levelColors: ["#D8FCD8", "#A0F9A0", "#228b22","#03DF04"],
+        levelColorsGradient: false,
+        pointer: true,
+        pointerOptions: {
+            toplength: -15,
+            bottomlength: 10,
+            bottomwidth: 12,
+            color: "#000"
+        },
+        startAnimationTime: 2000,
+        refreshAnimationTime: 1000,
+        valueFontColor: "#000"
+    });
+    positive_gauge.refresh(positive_percentage);
+  
+    var negative_gauge = new JustGage({
+        id: "negative-gauge",
+        value: negative_percentage,
+        min: 0,
+        max: 100,
+        title: "Negative",
+        label: "%",
+        gaugeWidthScale: 0.6,
+        levelColors: ["#FF4D50", "#EE1B10", "#C6230F"],
+        levelColorsGradient: false,
+        pointer: true,
+        pointerOptions: {
+            toplength: -15,
+            bottomlength: 10,
+            bottomwidth: 12,
+            color: "#000"
+        },
+        startAnimationTime: 2000,
+        refreshAnimationTime: 1000,
+        valueFontColor: "#000"
+    });
+    negative_gauge.refresh(negative_percentage);
+  </script>
+  {% endblock %}

@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+{% block title %}Poverty{% endblock %}
+{% block content %}
+<style>
+    table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-size: 18px;
+  }
+  th, td {
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+    color: #228b22;
+  }
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  td a {
+    display: block;
+    text-decoration: none;
+    color: #228b22;
+    font-size: 20px;
+  }
+  td a:hover {
+    background-color: #f2f2f2;
+  }
+  td:nth-child(4) a {
+    font-size: 28px;
+  }
+  #myChart{
+    width: 200px;
+  }
+  </style>
+<section class="dashboard">
+  <div class="dash-content">
+    <div class="overview">
+        <div class="title">
+            <i class="uil uil-tachometer-fast-alt"></i>
+            <span class="text">Poverty</span>
+            
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <table>
+        <thead>
+          <tr>
+            <th>PTI({{count1}})</th>
+            <th>PMLN({{count2}})</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><canvas id="myChart"></canvas></td>
+            <td><canvas id="myChart2"></canvas></td>
+          </tr>
+          <tr>
+            <th>Tweets of Verfied Account({{count3}})</th>
+            <th>Tweets of Verfied Account({{count4}})</th>
+        </tr>
+        <tr>
+            <td><canvas id="myChart3"></canvas></td>
+            <td><canvas id="myChart4"></canvas></td>
+        </tr>
+          <tr>
+            <!-- <td><canvas id="myLineChart" width="400" height="400"></canvas></td><td></td> -->
+          </tr>
+          <tr>
+            <!-- <td><canvas id="pieChart"  width="400" height="400"></canvas></td><td></td> -->
+          </tr>
+        </tbody>
+      </table>
+  </div>
+</section>
+<script>
+    // Get the data from Flask
+    var results = {{ results|tojson }};
+
+    // Extract the labels and data for the chart
+    var labels = results.map(function (result) {
+        return result._id;
+    });
+    var data = results.map(function (result) {
+        return result.count;
+    });
+
+    // Create the chart using Chart.js
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Count',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'PTI Tweets',
+                fontColor: '#333',
+                fontSize: 20,
+                padding: 20
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold',
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+<script>
+    // Get the data from Flask
+    var results = {{ results2|tojson }};
+
+    // Extract the labels and data for the chart
+    var labels = results.map(function (result) {
+        return result._id;
+    });
+    var data = results.map(function (result) {
+        return result.count;
+    });
+
+    // Create the chart using Chart.js
+    var ctx = document.getElementById('myChart2').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Count',
+                data: data,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor:'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'PTI Tweets',
+                fontColor: '#333',
+                fontSize: 20,
+                padding: 20
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold',
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+<script>
+    // Get the data from Flask
+    var results = {{ results| tojson }};
+
+    // Extract the labels and data for the chart
+    var labels = results.map(function (result) {
+        return result._id;
+    });
+    var data = results.map(function (result) {
+        return result.count;
+    });
+
+    // Create the chart using Chart.js
+    var ctx = document.getElementById('myLineChart').getContext('2d');
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Count',
+                data: data,
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+<script>
+    var results = {{ results| tojson }};
+
+// Extract the labels and data for the chart
+var labels = results.map(function (result) {
+    return result._id;
+});
+var data = results.map(function (result) {
+    return result.count;
+});
+
+// Create the chart using Chart.js
+var ctx = document.getElementById('pieChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Count',
+            data: data,
+            backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)', 'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)'],
+            borderColor: ['#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff'],
+            borderWidth: 2,
+            circumference: 2 * Math.PI
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70,
+        legend: {
+            position: 'right'
+        }
+    }
+});
+</script>
+<script>
+    // Get the data from Flask
+    var results = {{ resultsv| tojson }};
+
+    // Extract the labels and data for the chart
+    var labels = results.map(function (result) {
+        return result._id;
+    });
+    var data = results.map(function (result) {
+        return result.count;
+    });
+
+    // Create the chart using Chart.js
+    var ctx = document.getElementById('myChart3').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Count',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'PTI Tweets',
+                fontColor: '#333',
+                fontSize: 20,
+                padding: 20
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold',
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+<script>
+    // Get the data from Flask
+    var results = {{ resultsv2| tojson }};
+
+    // Extract the labels and data for the chart
+    var labels = results.map(function (result) {
+        return result._id;
+    });
+    var data = results.map(function (result) {
+        return result.count;
+    });
+
+    // Create the chart using Chart.js
+    var ctx = document.getElementById('myChart4').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Count',
+                data: data,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'PTI Tweets',
+                fontColor: '#333',
+                fontSize: 20,
+                padding: 20
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontColor: '#333',
+                        fontStyle: 'bold',
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+{% endblock %}

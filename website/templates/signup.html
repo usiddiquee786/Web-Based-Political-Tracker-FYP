@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="dashboard">
+  <!-- <div class="top">
+      <i class="uil uil-bars sidebar-toggle"></i> -->
+
+      <!--<div class="search-box">
+          <i class="uil uil-search"></i>
+          <input type="text" placeholder="Search here...">
+      </div>-->
+      
+      <!--<img src="images/profile.jpg" alt="">-->
+  <!-- </div> -->
+
+  <div class="dash-content">
+      <div class="overview">
+          <div class="title">
+              <i class="uil uil-tachometer-fast-alt"></i>
+              <span class="text" style="transform: upper;">{{word}}</span>
+              <!-- <select name="sector" id="sector" class="dd">
+                  <option value="select" selected disabled>Select Topic</option>
+                  <option value="Health" >Health</option>
+                  <option value="Employment">Employment</option>
+                  <option value="Education">Education</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Poverty">Poverty</option>
+                 
+                </select> -->
+
+
+          <!-- Checked DropDown Party -->
+           <!-- Checked Dropdown Topics-->
+
+                
+          </div>
+          <div class="boxes">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>User Name</th>
+                  <th>Tweet</th>
+                  <th>Sentiment</th>
+                  <th>Likes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for doc in docs %}
+                <tr>
+                  <td><a href="/partiesdata?id={{ doc['_id'] }}">{{ doc['Name'] }}</a></td>
+                  <td>{{ doc['User'] }}</td>
+                  <td><a href="/partiesdata?id={{ doc['_id'] }}">{{ doc['tweet_text'] }}</a></td>
+                  <td>
+                    <a href="/partiesdata?id={{ doc['_id'] }}">
+                      {% if doc['sentiment'] == 'P' %}
+                        <span style="font-size: 32px; color: green;">😊</span>
+                      {% elif doc['sentiment'] == 'N' %}
+                        <span style="font-size: 32px; color: red;">😔</span>
+                      {% else %}
+                        <span style="font-size: 32px; color: blue;">😐</span>
+                      {% endif %}
+                    </a>
+                  </td>
+                  <td>{{ doc['fav_count'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+      </div>
+  </div>
+</section>
+</body>
+<!-- <script>
+  window.history.pushState({}, '', '/testing');
+</script> -->
+{% endblock %}

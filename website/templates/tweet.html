@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="dashboard">
+    <!-- <div class="top">
+        <i class="uil uil-bars sidebar-toggle"></i> -->
+  
+        <!--<div class="search-box">
+            <i class="uil uil-search"></i>
+            <input type="text" placeholder="Search here...">
+        </div>-->
+        
+        <!--<img src="images/profile.jpg" alt="">-->
+    <!-- </div> -->
+  
+    <div class="dash-content">
+        <div class="overview">
+            <div class="title">
+                <i class="uil uil-tachometer-fast-alt"></i>
+                <span class="text">{{Name}}</span>
+                
+                <br>
+                </div>
+                <div class="profile">
+                    <img src="{{ url_for('static', filename='image/' + data['User'] + '.jpg') }}" alt="Profile Picture" class="profile-picture">
+                    <h2>{{data['tweet_text']}}</h2>
+                    <button class="more-tweets-btn"><a href="/profile?user={{ data['User'] }}">More Tweets</a></button>
+                </div>
+                <div class="boxes">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Reply</th>
+                            <th>Sentiment</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for doc in data2 %}
+                        <tr>
+                            <td>{{ doc['user'] }}</td>
+                            <td>{{ doc['rply_text'] }}</td>
+                            <td>
+                                {% if doc['sentiment'] == 'P' %}
+                                <span style="font-size: 32px; color: green;">😊</span>
+                                {% elif doc['sentiment'] == 'N' %}
+                                <span style="font-size: 32px; color: red;">😔</span>
+                                {% else %}
+                                <span style="font-size: 32px; color: blue;">😐</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                  
+            </div>
+            <div class="boxes">
+              
+            </div>
+        </div>
+    </div>
+  </section>
+  
+
+  <!-- <script>
+    window.history.pushState({}, '', '/tweet');
+  </script> -->
+{% endblock %}

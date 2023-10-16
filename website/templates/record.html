@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+<section class="dashboard">
+  <div class="dash-content">
+    <div class="overview">
+        <div class="title">
+            <i class="uil uil-tachometer-fast-alt"></i>
+            <span class="text">Analytics</span>
+            <!-- <select name="sector" id="sector" class="dd">
+                <option value="select" selected disabled>Select Topic</option>
+                <option value="Health" >Health</option>
+                <option value="Employment">Employment</option>
+                <option value="Education">Education</option>
+                <option value="Finance">Finance</option>
+                <option value="Poverty">Poverty</option>
+            
+              </select> -->
+              <form id="myform" method="POST" action="/analytics">
+                <div class="multipleSelectionP">
+                    <div class="selectBoxP" onclick="showCheckboxesP()">
+                        <select class="selectHP">
+                            <option class="btn-textP">Select Party</option>
+                        </select>
+                        <div class="overSelectP" id="displayP"></div>
+                    </div>
+                    <div id="checkBoxesP">
+                        <label for="PTI">
+                            <input type="checkbox" id="PTI" class="itemP" name="parties" value="PTI" {% if 'PTI' in selected_parties %} checked {% endif %} />
+                            PTI
+                        </label>
+            
+                        <label for="PMLN">
+                            <input type="checkbox" id="PMLN" class="itemP" name="parties" value="PMLN" {% if 'PMLN' in selected_parties %} checked {% endif %} />
+                            PML-N
+                        </label>
+                        <label for="PPP">
+                            <input type="checkbox" id="PPP" class="itemP" name="parties" value="PPP" {% if 'PPP' in selected_parties %} checked {% endif %} />
+                            PPP
+                        </label>
+                    </div>
+                </div>
+                <div class="multipleSelection">
+                    <div class="selectBox" onclick="showCheckboxes()">
+                        <select class="selectH">
+                            <option class="btn-text">Select location</option>
+                        </select>
+                        <div class="overSelect" id="display"></div>
+                    </div>
+                    <div id="checkBoxes">
+                        <label for="first">
+                            <input type="checkbox" id="first" class="item" name="locations" value="PJ" {% if 'PJ' in selected_locations %} checked {% endif %} />
+                            Punjab
+                        </label>
+            
+                        <label for="second">
+                            <input type="checkbox" id="second" class="item" name="locations" value="KP" {% if 'KP' in selected_locations %} checked {% endif %} />
+                            khyber Pakhtunkhwa
+                        </label>
+                        <label for="third">
+                            <input type="checkbox" id="third" class="item" name="locations" value="SI" {% if 'SI' in selected_locations %} checked {% endif %} />
+                            Sindh
+                        </label>
+                        <label for="fourth">
+                            <input type="checkbox" id="fourth" class="item" name="locations" value="BAL" {% if 'BAL' in selected_locations %} checked {% endif %} />
+                            Balochistan
+                        </label>
+                        <label for="fifth">
+                            <input type="checkbox" id="fifth" class="item" name="locations" value="ISL" {% if 'ISL' in selected_locations %} checked {% endif %} />
+                            Islamabad
+                        </label>
+                    </div>
+                </div>
+            </form>
+            
+        <!-- Checked DropDown Party -->
+      </div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <h1>{{str2}}</h1>
+  </div>
+</section>
+<!-- Here the code for wordcloud starts -->
+<script>
+  const form = document.getElementById('myform');
+  const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+  
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+      form.submit();
+    });
+  });
+</script>
+
+
+<!-- Checked Dropdownjs Topic -->
+<script>
+  var show = true;
+
+  function showCheckboxes() {
+      var checkboxes = 
+          document.getElementById("checkBoxes");
+
+      if (show) {
+          checkboxes.style.display = "block";
+          show = false;
+      } else {
+          checkboxes.style.display = "none";
+          show = true;
+      }
+  }
+
+//   document.addEventListener('click', function clickOutside(event) {
+//   const items = document.querySelectorAll(".item");
+//   items.forEach(item => {
+//     item.addEventListener("click", () => {
+//     item.classList.toggle("checked");
+    
+//     let checked = document.querySelectorAll(".checked"),
+//       btnText = document.querySelector(".btn-text");
+
+//     if (checked && checked.length > 0) {
+//       btnText.innerText = `${checked.length} Selected`;
+//       // sendData();
+//     } else {
+//       btnText.innerText = "Select location";
+//     }
+//   });
+// });
+// });
+
+</script>
+<!-- Checked Dropdownjs Party -->
+<script>
+  var showP = true;
+
+  function showCheckboxesP() {
+      
+      var checkboxesP = 
+          document.getElementById("checkBoxesP");
+
+      if (showP) {
+          checkboxesP.style.display = "block";
+          showP = false;
+      } else {
+          checkboxesP.style.display = "none";
+          showP = true;
+      }
+  }
+
+ 
+
+</script>
+<script></script>
+{% endblock %}
